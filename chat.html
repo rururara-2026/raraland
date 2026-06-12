@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LALA LAND｜角色對話</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="chat-body">
+  <div class="chat-bg" id="chatBg"></div>
+  <div class="character-decoration" id="characterDecoration" aria-hidden="true"></div>
+
+  <div class="chat-shell">
+    <header class="chat-header">
+      <a class="back-link" href="index.html">‹ 角色列表</a>
+      <div class="chat-character">
+        <div class="avatar" id="characterAvatar"></div>
+        <div>
+          <h1 id="characterName">角色</h1>
+          <p id="characterSubtitle"></p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="ghost-button small" id="openPreludeButton">前導劇情</button>
+        <button class="ghost-button small" id="copyRoleLink">複製角色連結</button>
+        <button class="ghost-button small" id="openSettings">設定</button>
+      </div>
+    </header>
+
+    <section class="scene-card" id="sceneCard">
+      <pre id="sceneStatusText">時間：自動生成
+地點：由劇情決定
+Page：001
+PC：未選擇</pre>
+    </section>
+
+    <main class="messages" id="messages" aria-live="polite"></main>
+
+    <footer class="composer">
+      <button class="composer-tool" id="newChatButton" title="新對話">＋</button>
+      <textarea id="messageInput" rows="1" placeholder="輸入訊息……"></textarea>
+      <button class="send-button" id="sendButton">送出</button>
+    </footer>
+  </div>
+
+  <dialog class="modal" id="settingsDialog">
+    <form method="dialog" class="modal-card wide-modal">
+      <div class="modal-header">
+        <h2>連線／PC設定</h2>
+        <button class="icon-button" value="close" aria-label="關閉">×</button>
+      </div>
+      <p class="modal-note">每個角色都能保存多個不同 PC。當下選中的 PC 名稱、檔案頭像與背景外觀描述，會和當下選中的角色一起送給 Gemini 讀取。</p>
+
+      <section class="settings-section">
+        <h3>連線</h3>
+        <label>Gemini API Key
+          <input id="apiKeyInput" type="password" placeholder="玩家自己的 Gemini API Key" autocomplete="off" />
+        </label>
+        <label>模型名稱
+          <input id="modelInput" type="text" placeholder="gemini-1.5-flash" />
+        </label>
+      </section>
+
+      <section class="settings-section">
+        <h3>狀態列格式</h3>
+        <p class="modal-note">可依自己的閱讀習慣更改。可用變數：{time}、{location}、{page}、{pc}、{character}</p>
+        <label>前台狀態列顯示格式
+          <textarea id="statusTemplateInput" placeholder="時間：{time}
+地點：{location}
+Page：{page}
+PC：{pc}"></textarea>
+        </label>
+      </section>
+
+      <section class="settings-section pc-section">
+        <h3>此角色的 PC</h3>
+        <label>選擇 PC
+          <select id="pcSelect"></select>
+        </label>
+        <div class="pc-actions-row">
+          <button class="ghost-button small" id="newPcButton" value="default">新增PC</button>
+          <button class="ghost-button small danger-soft" id="deletePcButton" value="default">刪除PC</button>
+        </div>
+        <label>PC名稱
+          <input id="pcNameInput" type="text" placeholder="例如：露菈、翻譯官、偵探小姐" />
+        </label>
+        <label>PC頭像檔案
+          <input id="pcAvatarFileInput" type="file" accept="image/*" />
+        </label>
+        <div class="pc-preview-row">
+          <div class="avatar pc-preview" id="pcAvatarPreview">你</div>
+          <p>選擇檔案後會存在瀏覽器本機；每個角色可以各自保存不同 PC。</p>
+        </div>
+        <label>PC背景／外觀
+          <textarea id="pcProfileInput" placeholder="可填寫外貌、氣質、身分、與此角色的關係、想讓角色知道的背景設定……"></textarea>
+        </label>
+      </section>
+
+      <menu class="modal-actions">
+        <button class="primary-button" id="saveSettingsButton" value="default">儲存</button>
+      </menu>
+    </form>
+  </dialog>
+
+
+  <dialog class="modal" id="preludeDialog">
+    <form method="dialog" class="modal-card reading-modal">
+      <div class="modal-header">
+        <h2 id="preludeTitle">前導劇情</h2>
+        <button class="icon-button" value="close" aria-label="關閉">×</button>
+      </div>
+      <p class="modal-note" id="preludeNote">以下事件僅供閱讀，不進入劇情互動。</p>
+      <article class="reading-content" id="preludeContent"></article>
+      <menu class="modal-actions">
+        <button class="primary-button" id="markPreludeReadButton" value="default">我已閱讀，進入對話</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="chat.js"></script>
+</body>
+</html>

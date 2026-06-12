@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LALA LAND｜選擇角色</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="home-body">
+  <div class="home-shell">
+    <header class="home-hero">
+      <div class="brand-title">LALA LAND</div>
+      <p id="homeDescription" class="home-description">你好....準備好踏上新的旅程了嗎?</p>
+      <button class="ghost-button" id="openGlobalSettings">連線設定</button>
+    </header>
+
+    <main>
+      <section class="character-grid" id="characterGrid" aria-label="角色列表"></section>
+    </main>
+  </div>
+
+  <div class="creator-credit">創作者:露菈</div>
+
+  <dialog class="modal" id="settingsDialog">
+    <form method="dialog" class="modal-card">
+      <div class="modal-header">
+        <h2>連線設定</h2>
+        <button class="icon-button" value="close" aria-label="關閉">×</button>
+      </div>
+      <p class="modal-note">API Key 與模型由玩家自行填寫，預設儲存在本機瀏覽器。此版本不使用 Cloudflare Worker；玩家的瀏覽器會直接呼叫 Gemini。</p>
+      <label>Gemini API Key
+        <input id="apiKeyInput" type="password" placeholder="貼上自己的 Gemini API Key" autocomplete="off" />
+      </label>
+      <label>模型名稱
+        <input id="modelInput" type="text" placeholder="例如：gemini-1.5-flash" />
+      </label>
+      <menu class="modal-actions">
+        <button class="primary-button" id="saveSettingsButton" value="default">儲存</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
