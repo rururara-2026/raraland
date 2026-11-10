@@ -133,8 +133,24 @@ function initDrink(){Object.entries(drinkOpts).forEach(([k,arr])=>{const c=docum
 function pickDrink(k,v,el){state.drink[k]=v;document.querySelectorAll(`.chips[data-key="${k}"] .chip`).forEach(x=>x.classList.remove('on'));el.classList.add('on');updateDrinkReply()}
 function updateDrinkReply(){let ja='「……悪くない。」',zh='……不壞。';if(state.drink.base==='無酒精茶'){ja='「俺を何歳だと思ってる。」';zh='……妳當我幾歲？'}else if(state.drink.base==='威士忌'&&state.drink.ice==='一顆大冰'){ja='「分かってるじゃないか。」';zh='這不是挺懂我的嗎。'} if(state.drink.side==='巧克力'){ja='「甘いもんまで付けるのか。……まぁ、もらっとく。」';zh='連甜的都替我配了啊。……算了，我收下。'} document.getElementById('drinkReply').innerHTML=`<div class="jp">${ja}</div><div class="zh">${zh}</div>`}
 function lockDrink(){if(!state.drink.base||!state.drink.ice||!state.drink.side){alert('三項都替組長選好。');return}nextStage(4)}
+const newBirthdayFortunes=fortunes.filter(x=>/^extra\d{2}$/.test(x.image));
+let newFortuneBag=[];
+function refillNewFortuneBag(){
+  newFortuneBag=[...newBirthdayFortunes];
+  for(let i=newFortuneBag.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [newFortuneBag[i],newFortuneBag[j]]=[newFortuneBag[j],newFortuneBag[i]];
+  }
+}
+function pickBirthdayFortune(){
+  if(state.fortuneDraws<=10){
+    if(!newFortuneBag.length)refillNewFortuneBag();
+    return newFortuneBag.pop();
+  }
+  return fortunes[Math.floor(Math.random()*fortunes.length)];
+}
 function setFortuneFace(f){state.fortune=f;document.getElementById('fortuneImg').src=IMG[f.image];document.getElementById('fortuneGrade').textContent=f.grade;document.getElementById('fortuneName').textContent=f.name;document.getElementById('fortuneJa').textContent='「'+f.ja.replace(/^「|」$/g,'')+'」';document.getElementById('fortuneZh').textContent=f.zh;}
-function drawFortune(){try{enableAudio()}catch(e){console.warn('Audio unavailable',e);} const inner=document.getElementById('fortuneInner');state.fortuneDraws++;const f=fortunes[Math.floor(Math.random()*fortunes.length)];const reveal=()=>{setFortuneFace(f);requestAnimationFrame(()=>inner.classList.add('revealed'));};if(inner.classList.contains('revealed')){inner.classList.remove('revealed');setTimeout(reveal,430);}else reveal();document.getElementById('fortuneDrawCount').textContent=`已抽 ${state.fortuneDraws} 次 · ${state.fortuneDraws<5?'還能再貪心一點':'組長已經看妳很久了'}`;if(state.fortuneDraws===5){state.easter++;const sec=document.getElementById('fortuneSecret');sec.textContent='「……五回目だぞ。欲張りだな。」（……都第五次了。真貪心。）';sec.classList.add('show');toast('隱藏彩蛋解鎖｜欲張り');playLighter();}}
+function drawFortune(){try{enableAudio()}catch(e){console.warn('Audio unavailable',e);} const inner=document.getElementById('fortuneInner');state.fortuneDraws++;const f=pickBirthdayFortune();const reveal=()=>{setFortuneFace(f);requestAnimationFrame(()=>inner.classList.add('revealed'));};if(inner.classList.contains('revealed')){inner.classList.remove('revealed');setTimeout(reveal,430);}else reveal();document.getElementById('fortuneDrawCount').textContent=`已抽 ${state.fortuneDraws} 次 · ${state.fortuneDraws<5?'還能再貪心一點':'組長已經看妳很久了'}`;if(state.fortuneDraws===5){state.easter++;const sec=document.getElementById('fortuneSecret');sec.textContent='「……五回目だぞ。欲張りだな。」（……都第五次了。真貪心。）';sec.classList.add('show');toast('隱藏彩蛋解鎖｜欲張り');playLighter();}}
 function lockFortune(){if(!state.fortune){toast('先翻一張御籤。');return}nextStage(5)}
 function initCandles(){const c=document.getElementById('candles');for(let i=0;i<6;i++){const b=document.createElement('button');b.className='candle';b.textContent='🕯️';b.onclick=()=>{playLighter();b.classList.add('out');b.disabled=true;if(document.querySelectorAll('.candle.out').length===6){state.candlesDone=true;document.getElementById('wish').classList.add('show');const n=document.getElementById('cakeNext');n.disabled=false;n.style.opacity=1}};c.appendChild(b)}}
 function affinityScore(){let p=state.inviteAccepted?2:1;p+=state.score*2;if(state.gift){p+=({'威士忌':2,'紅牡丹':3,'金屬打火機':3,'神秘禮物':1}[state.gift.n]||0)}if(state.drink.base==='威士忌')p+=2;else if(state.drink.base)p+=1;if(state.drink.ice==='一顆大冰')p+=2;else if(state.drink.ice)p+=1;if(state.drink.side==='巧克力'||state.drink.side==='什麼都不要')p+=1;if(state.candlesDone)p+=2;p+=Math.min(state.easter,2);return p}
